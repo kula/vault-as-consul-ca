@@ -1,0 +1,23 @@
+#!/bin/bash
+
+# Copyright (c) HashiCorp, Inc
+# SPDX-License-Identifier: MPL-2.0
+
+# Start vault temporarily
+/usr/local/bin/vault server -config=/opt/vault/conf &
+sleep 10
+
+# Initialize
+export VAULT_ADDR="http://127.0.0.1:8200"
+/usr/local/bin/vault operator init -n 1 -t 1 -format json > /home/vagrant/vault_init.json
+sleep 10
+sudo kill -INT $(cat /opt/vault/vault.pid)
+
+# Write out Consul connect configuration stanza, now that we 
+# have a Vault token to put into this. We use the Vault 
+# root token, this is A Bad Idea(TM), do not do this outside
+# of an isolated demonstration environment
+
+TOKEN=$(jq -r .root_token /home/vagrant/vault_init.json)
+sed "s/%%VAULT_TOKEN%%/${TOKEN}/" /home/vagrant/.demo/files/consul-connect.hcl | sudo tee -a /opt/consul/conf/connect.hcl > /dev/null
+echo "export VAULT_TOKEN=${TOKEN}" >> /home/vagrant/.bashrc

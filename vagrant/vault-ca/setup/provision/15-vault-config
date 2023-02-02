@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# Copyright (c) HashiCorp, Inc
+# SPDX-License-Identifier: MPL-2.0
+
+VAULT_DIR=/opt/vault
+VAULT_CONF_DIR=${VAULT_DIR}/conf
+VAULT_CONF="/home/vagrant/.demo/files/vault-server.hcl"
+VAULT_CONF_DEST_NAME="server.hcl"
+
+sudo install -m 555 -o root -g staff ${VAULT_CONF} ${VAULT_CONF_DIR}/${VAULT_CONF_DEST_NAME}
+
+echo "export VAULT_ADDR='http://127.0.0.1:8200'" >> /home/vagrant/.bashrc

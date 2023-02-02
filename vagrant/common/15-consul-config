@@ -1,0 +1,11 @@
+#!/bin/bash
+
+# Copyright (c) HashiCorp, Inc
+# SPDX-License-Identifier: MPL-2.0
+
+CONSUL_DIR=/opt/consul
+CONSUL_CONF_DIR=${CONSUL_DIR}/conf
+CONSUL_CONF="/home/vagrant/.demo/files/consul-server.hcl"
+CONSUL_CONF_DEST_NAME="server.hcl"
+
+sudo install -m 555 -o root -g staff ${CONSUL_CONF} ${CONSUL_CONF_DIR}/${CONSUL_CONF_DEST_NAME}

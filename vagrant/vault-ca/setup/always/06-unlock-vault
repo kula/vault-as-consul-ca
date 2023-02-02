@@ -1,0 +1,11 @@
+#!/bin/bash
+
+# Copyright (c) HashiCorp, Inc
+# SPDX-License-Identifier: MPL-2.0
+
+sleep 10
+
+export VAULT_ADDR="http://127.0.0.1:8200"
+for key in $(jq -r '.unseal_keys_b64 | join(" ")' /home/vagrant/vault_init.json); do
+  /usr/local/bin/vault operator unseal ${key}
+done

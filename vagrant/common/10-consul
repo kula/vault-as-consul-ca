@@ -1,0 +1,23 @@
+#!/bin/bash
+
+# Copyright (c) HashiCorp, Inc
+# SPDX-License-Identifier: MPL-2.0
+
+CONSUL_VERSION="1.14.3"
+CONSUL_ARCH="linux_amd64"
+CONSUL_FILENAME="consul_${CONSUL_VERSION}_${CONSUL_ARCH}.zip"
+CONSUL_ZIP=https://releases.hashicorp.com/consul/${CONSUL_VERSION}/${CONSUL_FILENAME}
+CONSUL_DEST=/usr/local/bin/consul
+
+CONSUL_DIR=/opt/consul
+CONSUL_DATA=${CONSUL_DIR}/data
+CONSUL_CONF=${CONSUL_DIR}/conf
+
+
+pushd /tmp
+curl -LO ${CONSUL_ZIP}
+unzip ${CONSUL_FILENAME}
+sudo install -m 555 consul ${CONSUL_DEST}
+
+
+sudo install -d -m 755 -o root -g staff ${CONSUL_DIR} ${CONSUL_DATA} ${CONSUL_CONF}

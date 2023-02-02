@@ -1,0 +1,22 @@
+#!/bin/bash
+
+# Copyright (c) HashiCorp, Inc
+# SPDX-License-Identifier: MPL-2.0
+
+VAULT_VERSION="1.12.2"
+VAULT_ARCH="linux_amd64"
+VAULT_FILENAME="vault_${VAULT_VERSION}_${VAULT_ARCH}.zip"
+VAULT_ZIP=https://releases.hashicorp.com/vault/${VAULT_VERSION}/${VAULT_FILENAME}
+VAULT_DEST=/usr/local/bin/vault
+
+VAULT_DIR=/opt/vault
+VAULT_DATA=${VAULT_DIR}/data
+VAULT_CONF=${VAULT_DIR}/conf
+
+pushd /tmp
+curl -LO ${VAULT_ZIP}
+unzip ${VAULT_FILENAME}
+sudo install -m 555 vault ${VAULT_DEST}
+sudo setcap cap_ipc_lock=+ep ${VAULT_DEST}
+
+sudo install -d -m 755 -o root -g staff ${VAULT_DIR} ${VAULT_DATA} ${VAULT_CONF}

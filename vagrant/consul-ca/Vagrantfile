@@ -1,0 +1,41 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# Copyright (c) HashiCorp, Inc
+# SPDX-License-Identifier: MPL-2.0
+
+# Provision scripts
+$setup_script = <<-'SETUP_SCRIPT'
+chmod +x /home/vagrant/.demo/setup/provision/[0-9][0-9]-*
+chmod +x /home/vagrant/.demo/setup/always/[0-9][0-9]-*
+for script in /home/vagrant/.demo/setup/provision/[0-9][0-9]-*; do
+  $script
+done
+SETUP_SCRIPT
+
+$demo_setup = <<-'DEMO_SETUP'
+for script in /home/vagrant/.demo/setup/always/[0-9][0-9]-*; do
+  $script
+done
+DEMO_SETUP
+
+$demo_magic = <<-'DEMO_MAGIC'
+curl -sLo .demo/demo-magic.sh https://raw.githubusercontent.com/paxtonhare/demo-magic/master/demo-magic.sh
+chmod +x .demo/demo-magic.sh
+DEMO_MAGIC
+
+Vagrant.configure("2") do |config|
+  config.vm.box = "debian/bullseye64"
+  config.vm.box_version = "11.20221219.1"
+  config.vm.hostname = "consul-ca"
+
+  config.vm.provision "demo_dir", type: "shell", inline: "install -d -o vagrant /home/vagrant/.demo"
+  config.vm.provision "setup_copy", type: "file", source: "setup", destination: "/home/vagrant/.demo/setup"
+  config.vm.provision "common_copy", type: "file", source: "../common", destination: "/home/vagrant/.demo/setup/provision"
+  config.vm.provision "file_copy", type: "file", source: "files", destination: "/home/vagrant/.demo/files"
+
+  config.vm.provision "bootstrap", type: "shell", inline: $setup_script
+  config.vm.provision "demo_magic", type: "shell", inline: $demo_magic
+  config.vm.provision "demo_setup", type: "shell", run: "always", inline: $demo_setup
+
+end

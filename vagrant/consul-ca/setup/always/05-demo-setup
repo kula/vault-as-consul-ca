@@ -1,0 +1,17 @@
+#!/bin/bash
+
+# Copyright (c) HashiCorp, Inc
+# SPDX-License-Identifier: MPL-2.0
+
+cd /home/vagrant
+
+sudo chown vagrant /home/vagrant/.demo/files/demo.sh
+sudo chmod +x /home/vagrant/.demo/files/demo.sh
+
+# Start a detached screen session
+sudo -u vagrant screen -dmS demo 
+sudo -u vagrant screen -S demo -X number 2
+sudo -u vagrant screen -S demo -X screen -t consul-server 0 sudo /usr/local/bin/consul agent -config-dir=/opt/consul/conf
+sudo -u vagrant screen -S demo -X screen -t shell 1
+sudo -u vagrant screen -S demo -p 1 -X stuff ".demo/files/demo.sh ^M"
+

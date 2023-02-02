@@ -1,0 +1,14 @@
+#!/bin/bash
+
+# Copyright (c) HashiCorp, Inc
+# SPDX-License-Identifier: MPL-2.0
+
+sudo apt update
+sudo apt install -y vim-nox screen jq curl binutils pv
+
+cat > /home/vagrant/.screenrc <<-SCREENRC
+	defscrollback 5000
+	caption always
+	caption string ' %H: %3n %t'
+SCREENRC
+chown vagrant:vagrant /home/vagrant/.screenrc

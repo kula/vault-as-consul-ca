@@ -1,0 +1,31 @@
+#!/bin/bash
+
+# Copyright (c) HashiCorp, Inc
+# SPDX-License-Identifier: MPL-2.0
+
+# We set `raft_snapshot_threshold` to 256 so that we force snapshots
+# after a small number of transactions (in our demonstration we want
+# to look both in the current Raft log as well as in the latest 
+# snapshot). Each K/V write is a transaction, so do that plus, say, 10
+# writes to force a snapshot (there will be some other transactions
+# which occur the first time Consul starts, so this is enough buffer 
+# to force a snapshot)
+
+SNAPCOUNT=266
+CONSUL_DIR=/opt/consul
+CONSUL_CONF=${CONSUL_DIR}/conf
+CONSUL_PID=${CONSUL_DIR}/consul-server.pid
+
+# Start Consul temporarily
+sudo /usr/local/bin/consul agent -config-dir ${CONSUL_CONF} >/dev/null 2>&1 &
+sleep 10
+
+# K/V writes
+for i in `seq 1 ${SNAPCOUNT}`; do
+	/usr/local/bin/consul kv put snap/${i} ${i} >/dev/null
+done
+
+sleep 10
+
+# Stop Consul
+sudo kill -INT `cat ${CONSUL_PID}`
