@@ -1,6 +1,6 @@
 # Why You Should Use Vault as Your Consul Certificate Authority
 
-Presented at [HashiTalks 2023](https://events.hashicorp.com/hashitalks2023)
+Presented at [HashiTalks 2023](https://www.youtube.com/watch?v=PnuTD3pKfH0)
 
 ## Demo Environments
 
